@@ -5,38 +5,38 @@
 using namespace std;
 
 int randGen() {
-    random_device rd;
-    mt19937 gen(rd());
-    uniform_int_distribution<> dist(1,6);
+    static random_device rd;
+    static mt19937 gen(rd());
+    static uniform_int_distribution<int> dist(0,19);
     return dist(gen);
 }
 
+int childFunc(int fd[]) {
+    int randNum = randGen();
+    write(fd[1], &randNum, sizeof(randNum));
+    return 0;
+}
+
 int main() {
-    //pid_t pid = fork();
 
     int fd[2];
     pipe(fd);
     
     pid_t mainPid = getpid();
 
-    //pid_t P2 = fork();
-    //pid_t P1 = fork();
-    //pid_t P3 = fork();
-    //pid_t P4 = fork();
-
     for (int i = 0; i < 4; ++i) {
 
-        if (getpid() == mainPid) {
-            pid_t P = fork();
+        if (fork() == 0) {
+            return childFunc(fd);
         }
     }
 
-    if (getpid() != mainPid) {
-        int randNum = randGen();
-        cout << randNum << endl;
-    }
+    int n;
 
-    if (getpid())
+    for (int i = 0; i < 4; ++i) {
+        read(fd[0], &n, sizeof(n));
+        cout << n << endl;
+    }
 
     return 0;
 }
