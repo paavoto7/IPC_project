@@ -5,13 +5,9 @@
 
 using namespace std;
 
-/* At the moment this scheduler is using sleep to wait for the other file to be done.
-It isn't really scheduling anything and the implementation is really clumsy.
-If these were initiated from the same top process this could work better I think,
-but the project specification states that scheduler is a "Scheduler is an independent process".
-I would imagine this is something similar that was shown during a lecture by using two different
-executables as entrypoints that exchanged data through pipe/FIFO.
-This implementation seems to be working though so I suppose we're on the right tracks at least.
+/* Currently uses busy waiting in the form of having additional int that is written
+at the end. We can't use zero as the indicator e.g. the last one, because the random
+numbers are between 0 and 19.
 */
 
 void sort(int nums[]) {
@@ -34,17 +30,20 @@ void sort(int nums[]) {
 
 int main() {
 
-    key_t key = ftok("topSec", 1);
+    key_t key = ftok("./key.txt", 2024);
 
     int shmid = shmget(key, 5*sizeof(int), IPC_CREAT | 0666);
 
     int* shmAdr = (int*) shmat(shmid, NULL, 0);
 
+    cout << "Shared memory creted by: " << getpid() << endl;
+
+    // Busy waiting as this is easy solution
     while (shmAdr[4] != -1) {
-        sleep(0.2); // Limit cpu usage
+        sleep(0.2); // Reduce cpu usage
     }
     
-    cout << "The number from shared memory are: ";
+    cout << "The numbers from shared memory are: ";
 
     int nums[4];
 

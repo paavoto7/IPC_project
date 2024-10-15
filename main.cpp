@@ -7,6 +7,14 @@
 
 using namespace std;
 
+int definedInts(int index) {
+    /* The instruction state that "The reviewer will give you 4 random numbers for P1-P4"
+    so this is used for that if the random number generator is not sufficient.
+    */
+    int nums[] = {18, 4, 2, 6}; // Just random nums
+    return nums[index];
+}
+
 int randGen() {
     // static as they don't change
     static random_device rd;
@@ -34,12 +42,12 @@ int main() {
     int fd[2];
     pipe(fd);
 
-    key_t key = ftok("topSec", 1);
+    key_t key = ftok("./key.txt", 2024);
     int shmid = shmget(key, 4*sizeof(int), 0);
 
     int* shmAdr = (int*) shmat(shmid, NULL, 0);
     
-    // Creates the P0-P4 processes
+    // Creates the P1-P4 processes
     for (int i = 0; i < 4; ++i) {
         pid_t pid = fork();
         childPids[i] = pid;
@@ -65,7 +73,7 @@ int main() {
         cout << "Reading from pipe: " << n << endl;
     }
 
-    shmAdr[4] = -1;
+    shmAdr[4] = -1; // This is used for implementing busy waiting
 
     close(fd[0]);
 
