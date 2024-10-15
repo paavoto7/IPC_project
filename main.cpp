@@ -29,7 +29,6 @@ int childFunc(int fd[]) {
     write(fd[1], &randNum, sizeof(randNum));
     close(fd[1]);
     cout << "Process: " << getpid() << ", number: " << randNum << endl;
-    cout << "Exiting forked process: " << getpid() << endl;
     exit(0);
 }
 
@@ -46,6 +45,10 @@ int main() {
     int shmid = shmget(key, 4*sizeof(int), 0);
 
     int* shmAdr = (int*) shmat(shmid, NULL, 0);
+
+    if (shmid == -1 || shmAdr == (int*) -1) {
+        return 1;
+    }
     
     // Creates the P1-P4 processes
     for (int i = 0; i < 4; ++i) {
@@ -61,7 +64,8 @@ int main() {
     
     // Waits for the child to be done
     for (int i = 0; i < 4; ++i) {
-        waitpid(childPids[i], NULL, 0);
+        pid_t expid = waitpid(childPids[i], NULL, 0);
+        cout << "Child process has exited: " << expid << endl;
     }
 
     cout << endl;
