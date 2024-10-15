@@ -21,6 +21,7 @@ int childFunc(int fd[]) {
     write(fd[1], &randNum, sizeof(randNum));
     close(fd[1]);
     cout << "Process: " << getpid() << ", number: " << randNum << endl;
+    cout << "Exiting forked process: " << getpid() << endl;
     exit(0);
 }
 
@@ -63,6 +64,8 @@ int main() {
         shmAdr[i] = n; // Write to the shared memory
         cout << "Reading from pipe: " << n << endl;
     }
+
+    shmAdr[4] = -1;
 
     close(fd[0]);
 

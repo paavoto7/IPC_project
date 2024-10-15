@@ -36,11 +36,13 @@ int main() {
 
     key_t key = ftok("topSec", 1);
 
-    int shmid = shmget(key, 4*sizeof(int), IPC_CREAT | 0666);
-
-    sleep(1); // Or implement busy waiting??
+    int shmid = shmget(key, 5*sizeof(int), IPC_CREAT | 0666);
 
     int* shmAdr = (int*) shmat(shmid, NULL, 0);
+
+    while (shmAdr[4] != -1) {
+        sleep(0.2); // Limit cpu usage
+    }
     
     cout << "The number from shared memory are: ";
 
