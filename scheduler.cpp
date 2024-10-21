@@ -36,7 +36,7 @@ int main() {
 
     int* shmAdr = (int*) shmat(shmid, NULL, 0);
 
-    cout << "Shared memory creted by: " << getpid() << endl;
+    cout << "Shared memory created by: " << getpid() << endl;
 
     // Busy waiting as this is easy solution
     while (shmAdr[4] != -1) {

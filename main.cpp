@@ -47,6 +47,7 @@ int main() {
     int* shmAdr = (int*) shmat(shmid, NULL, 0);
 
     if (shmid == -1 || shmAdr == (int*) -1) {
+        cout << "Problem with the shared memory" << endl;
         return 1;
     }
     
