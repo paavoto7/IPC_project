@@ -59,4 +59,7 @@ the pid so if the init fails the user can manually kill the process.
 ### Other notes on implementation:
 All the files contain magic numbers that are mostly related to the amount of random
 numbers. This could be changed pretty easily with a global variable or something more
-robust, but we didn’t see it necessary in this case.
+robust, but we didn’t see it necessary in this case. Another noteworthy point is that we
+were not well-acquainted with C++, or C for that matter, beforehand, so there may be some
+code smells or other odd choices in the code. The use of std::array or std::vector could
+have been a better way but with all the magic numbers it hardly matters for the scope of this project.
